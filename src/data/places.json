@@ -1,0 +1,34 @@
+[
+  {
+    "id": "krakow-market",
+    "name": "Kraków Main Market Square",
+    "coordinates": [19.9366, 50.0617],
+    "description": "Europe's largest medieval square, home to the Cloth Hall and St. Mary's Basilica.",
+    "keywords": ["history", "architecture", "krakow", "medieval"],
+    "image": "/assets/krakow-market.webp"
+  },
+  {
+    "id": "warsaw-oldtown",
+    "name": "Warsaw Old Town",
+    "coordinates": [21.0118, 52.2477],
+    "description": "Beautifully reconstructed UNESCO site, a symbol of resilience after WWII destruction.",
+    "keywords": ["warsaw", "reconstruction", "unesco", "history"],
+    "image": "/assets/warsaw-oldtown.webp"
+  },
+  {
+    "id": "gdansk-crane",
+    "name": "Gdańsk Crane (Żuraw)",
+    "coordinates": [18.6575, 54.3503],
+    "description": "A historic port crane and one of the most distinctive landmarks on the Motława River.",
+    "keywords": ["port", "gdansk", "maritime", "trade"],
+    "image": "/assets/gdansk-crane.webp"
+  },
+  {
+    "id": "malbork-castle",
+    "name": "Malbork Castle",
+    "coordinates": [19.035, 54.039],
+    "description": "The largest castle in the world by land area, built by the Teutonic Knights.",
+    "keywords": ["castle", "medieval", "teutonic", "unesco"],
+    "image": "/assets/malbork-castle.webp"
+  }
+]
