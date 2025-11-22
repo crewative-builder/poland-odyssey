@@ -1,3 +1,6 @@
+/* ADD MapLibre CSS import here (must be first) */
+@import "maplibre-gl/dist/maplibre-gl.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
