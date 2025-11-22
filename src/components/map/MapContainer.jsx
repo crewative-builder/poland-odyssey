@@ -23,7 +23,7 @@ const initializeMarkers = (mapInstance, openSidebar, markerRefs) => {
 
     markerRefs.current.push(marker);
 
-    // POPUP AND SIDEBAR LOGIC (UNCHANGED)
+    // POPUP AND SIDEBAR LOGIC
     markerElement.addEventListener("click", () => {
       const popupContent = `
             <div style="padding: 5px; max-width: 250px;">
@@ -59,23 +59,24 @@ const setMapLanguage = (mapInstance) => {
   if (!layers) return;
 
   layers.forEach((layer) => {
-    // Target layers that contain text labels (e.g., roads, places, boundaries)
+    // Target layers that contain text labels
     if (
       layer.layout &&
       layer.layout["text-field"] &&
       !layer.id.includes("raster")
     ) {
       try {
+        // Try setting to English name property
         mapInstance.setLayoutProperty(layer.id, "text-field", [
           "get",
           "name_en",
         ]);
       } catch (e) {
-        // If setting name_en fails, try the generic language setting
+        // If setting name_en fails, try name:en (different style convention)
         try {
           mapInstance.setLayoutProperty(layer.id, "text-field", [
-            "format",
-            ["get", "name"],
+            "get",
+            "name:en",
           ]);
         } catch (e2) {
           // Ignore, move to next layer
@@ -94,12 +95,10 @@ const MapContainer = () => {
 
   // Function to determine the style URL
   const getStyleUrl = (isDark) => {
-    // Using the simplest, most common style names that should be available on any key
-    const styleId = isDark ? "dark" : "streets"; // Switched to 'streets' and 'dark'
+    // FINAL ATTEMPT: Using the highly compatible 'basic' and 'outdoor' styles
+    const styleId = isDark ? "outdoor" : "basic";
     return `https://api.maptiler.com/maps/${styleId}/style.json?key=qouYd4hDXkrIIxMJOXH8`;
   };
-
-  const [mapStyleUrl, setMapStyleUrl] = useState(getStyleUrl(isDarkMode));
 
   // 1. EFFECT for Initial Map Setup (Runs ONCE)
   useEffect(() => {
@@ -107,7 +106,7 @@ const MapContainer = () => {
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: mapStyleUrl,
+      style: getStyleUrl(isDarkMode), // Use style based on initial theme state
       center: POLAND_CENTER,
       zoom: INITIAL_ZOOM,
       minZoom: 5,
@@ -128,7 +127,7 @@ const MapContainer = () => {
       markerRefs.current.forEach((marker) => marker.remove());
       map.current?.remove();
     };
-  }, [openSidebar]); // Do NOT include mapStyleUrl in initial useEffect deps
+  }, [openSidebar]); // Do NOT include isDarkMode in initial useEffect deps
 
   // 2. EFFECT for Theme Change (Runs when isDarkMode changes)
   useEffect(() => {
