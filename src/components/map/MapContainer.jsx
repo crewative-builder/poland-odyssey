@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from "react";
 import maplibregl from "maplibre-gl";
-import "maplibregl/dist/maplibre-gl.css";
 import placesData from "../../data/places.json";
 import appStore from "../../store/appStore";
 
