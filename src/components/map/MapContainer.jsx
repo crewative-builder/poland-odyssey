@@ -1,10 +1,11 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react"; // Added useState
 import maplibregl from "maplibre-gl";
 import placesData from "../../data/places.json";
 import appStore from "../../store/appStore";
 
 // Poland geographical center
 const POLAND_CENTER = [19.15, 51.92];
+const INITIAL_ZOOM = 6;
 
 // Function to initialize and add all markers
 const initializeMarkers = (mapInstance, openSidebar, markerRefs) => {
@@ -53,24 +54,49 @@ const initializeMarkers = (mapInstance, openSidebar, markerRefs) => {
   });
 };
 
+// Function to set map labels to English
+const setMapLanguage = (mapInstance) => {
+  // Check if the layer for landuse/admin/place names exists before setting layout
+  if (mapInstance.getLayer("place_other")) {
+    mapInstance.setLayoutProperty("place_other", "text-field", [
+      "get",
+      "name_en",
+    ]);
+  }
+  if (mapInstance.getLayer("place_city")) {
+    mapInstance.setLayoutProperty("place_city", "text-field", [
+      "get",
+      "name_en",
+    ]);
+  }
+  // Note: Maptiler layers can vary, this is a best-effort fix
+};
+
 const MapContainer = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
+  const markerRefs = useRef([]);
 
   const { openSidebar, isDarkMode } = appStore();
-  const markerRefs = useRef([]);
+
+  // State to manage the active map style URL
+  const getStyleUrl = (isDark) => {
+    // Use the official MapTiler style names that are known to work with basic keys
+    const styleId = isDark ? "dark-matter" : "basic-v2"; // 'dark-matter' and 'basic-v2' are reliable
+    return `https://api.maptiler.com/maps/${styleId}/style.json?key=qouYd4hDXkrIIxMJOXH8`;
+  };
+
+  const [mapStyleUrl, setMapStyleUrl] = useState(getStyleUrl(isDarkMode));
 
   // 1. EFFECT for Initial Map Setup (Runs ONCE)
   useEffect(() => {
     if (map.current) return;
 
-    const initialStyleUrl = `https://api.maptiler.com/maps/basic/style.json?key=qouYd4hDXkrIIxMJOXH8`;
-
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: initialStyleUrl,
+      style: mapStyleUrl, // Use state-managed style URL
       center: POLAND_CENTER,
-      zoom: 6,
+      zoom: INITIAL_ZOOM,
       minZoom: 5,
       maxBounds: [
         [10, 45],
@@ -78,37 +104,39 @@ const MapContainer = () => {
       ],
     });
 
-    // Add markers only when the initial style is fully loaded
+    // Add markers and set language only when the initial style is fully loaded
     map.current.on("style.load", () => {
       initializeMarkers(map.current, openSidebar, markerRefs);
+      setMapLanguage(map.current);
     });
 
-    // Clean up function: removes map instance when component unmounts
+    // Clean up function
     return () => {
       markerRefs.current.forEach((marker) => marker.remove());
       map.current?.remove();
     };
-  }, [openSidebar]); // openSidebar is stable, effectively runs once
+  }, [openSidebar, mapStyleUrl]); // Added mapStyleUrl to deps to handle the theme change robustly
 
   // 2. EFFECT for Theme Change (Runs when isDarkMode changes)
   useEffect(() => {
-    if (map.current) {
-      // Change to 'dark' for dark mode and 'basic' for light mode
-      const styleId = isDarkMode ? "dark" : "basic";
-      const styleUrl = `https://api.maptiler.com/maps/${styleId}/style.json?key=qouYd4hDXkrIIxMJOXH8`;
+    // When dark mode changes, update the URL state, which triggers the first useEffect
+    setMapStyleUrl(getStyleUrl(isDarkMode));
 
-      // Remove markers immediately to prepare for style change
+    if (map.current) {
+      // Remove markers immediately before style change
       markerRefs.current.forEach((marker) => marker.remove());
       markerRefs.current = [];
 
-      map.current.setStyle(styleUrl);
+      // Load the new style
+      map.current.setStyle(getStyleUrl(isDarkMode));
 
-      // Re-add markers only when the new style is fully loaded
+      // Re-add markers and set language once the new style is loaded
       map.current.once("style.load", () => {
         initializeMarkers(map.current, openSidebar, markerRefs);
+        setMapLanguage(map.current);
       });
     }
-  }, [isDarkMode, openSidebar]); // Re-run when dark mode is toggled
+  }, [isDarkMode, openSidebar]);
 
   return (
     <div
