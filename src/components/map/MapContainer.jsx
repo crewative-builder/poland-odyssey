@@ -1,3 +1,9 @@
+import React, { useRef, useEffect } from "react"; // <--- CRITICAL FIX: Make sure useRef and useEffect are here!
+import maplibregl from "maplibre-gl";
+import "maplibregl/dist/maplibre-gl.css";
+import placesData from "../../data/places.json";
+import appStore from "../../store/appStore";
+
 // Poland geographical center
 const POLAND_CENTER = [19.15, 51.92];
 
