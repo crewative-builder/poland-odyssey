@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from "react"; // CRITICAL: Hooks are imported
+import React, { useRef, useEffect } from "react"; // CRITICAL: Hooks are correctly imported
 import maplibregl from "maplibre-gl";
-// NO CSS IMPORT HERE (It should be in src/index.css)
+// NO CSS IMPORT HERE (Styles are imported in src/index.css)
 import placesData from "../../data/places.json";
 import appStore from "../../store/appStore";
 
@@ -18,12 +18,12 @@ const MapContainer = () => {
   useEffect(() => {
     if (map.current) return;
 
-    // Use a default light style for initial render
-    const initialStyleUrl = `https://api.maptiler.com/maps/streets-v2/style.json?key=qouYd4hDXkrIIxMJOXH8`;
+    // Use a reliable, common light style for initial render: 'basic'
+    const initialStyleUrl = `https://api.maptiler.com/maps/basic/style.json?key=qouYd4hDXkrIIxMJOXH8`;
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: initialStyleUrl,
+      style: initialStyleUrl, // Use 'basic' style
       center: POLAND_CENTER,
       zoom: 6,
       minZoom: 5,
@@ -35,6 +35,10 @@ const MapContainer = () => {
 
     map.current.on("load", () => {
       // Add all markers once the map style is loaded
+      // Clean up previous markers if they exist
+      markerRefs.current.forEach((marker) => marker.remove());
+      markerRefs.current = [];
+
       placesData.forEach((place) => {
         const markerElement = document.createElement("div");
         markerElement.className = "map-marker";
@@ -80,12 +84,13 @@ const MapContainer = () => {
       markerRefs.current.forEach((marker) => marker.remove());
       map.current?.remove();
     };
-  }, [openSidebar]); // openSidebar is stable, effectively runs once
+  }, [openSidebar]);
 
   // 2. EFFECT for Theme Change (Runs when isDarkMode changes)
   useEffect(() => {
     if (map.current) {
-      const styleId = isDarkMode ? "dark-v2" : "streets-v2";
+      // Use 'dark' for dark mode and 'basic' for light mode
+      const styleId = isDarkMode ? "dark" : "basic";
       const styleUrl = `https://api.maptiler.com/maps/${styleId}/style.json?key=qouYd4hDXkrIIxMJOXH8`;
       map.current.setStyle(styleUrl);
     }
