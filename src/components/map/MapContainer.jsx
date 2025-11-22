@@ -1,58 +1,32 @@
-import React, { useRef, useEffect } from "react"; // CRITICAL: Hooks are correctly imported
+import React, { useRef, useEffect } from "react";
 import maplibregl from "maplibre-gl";
-// NO CSS IMPORT HERE (Styles are imported in src/index.css)
 import placesData from "../../data/places.json";
 import appStore from "../../store/appStore";
 
 // Poland geographical center
 const POLAND_CENTER = [19.15, 51.92];
 
-const MapContainer = () => {
-  const mapContainer = useRef(null);
-  const map = useRef(null);
+// Function to initialize and add all markers
+const initializeMarkers = (mapInstance, openSidebar, markerRefs) => {
+  // 1. Remove any existing markers
+  markerRefs.current.forEach((marker) => marker.remove());
+  markerRefs.current = [];
 
-  const { openSidebar, isDarkMode } = appStore();
-  const markerRefs = useRef([]); // Use a ref to keep track of markers
+  // 2. Add all new markers
+  placesData.forEach((place) => {
+    const markerElement = document.createElement("div");
+    markerElement.className = "map-marker";
+    markerElement.dataset.id = place.id;
 
-  // 1. EFFECT for Initial Map Setup (Runs ONCE)
-  useEffect(() => {
-    if (map.current) return;
+    const marker = new maplibregl.Marker({ element: markerElement })
+      .setLngLat(place.coordinates)
+      .addTo(mapInstance);
 
-    // Use a reliable, common light style for initial render: 'basic'
-    const initialStyleUrl = `https://api.maptiler.com/maps/basic/style.json?key=qouYd4hDXkrIIxMJOXH8`;
+    markerRefs.current.push(marker);
 
-    map.current = new maplibregl.Map({
-      container: mapContainer.current,
-      style: initialStyleUrl, // Use 'basic' style
-      center: POLAND_CENTER,
-      zoom: 6,
-      minZoom: 5,
-      maxBounds: [
-        [10, 45],
-        [30, 58],
-      ],
-    });
-
-    map.current.on("load", () => {
-      // Add all markers once the map style is loaded
-      // Clean up previous markers if they exist
-      markerRefs.current.forEach((marker) => marker.remove());
-      markerRefs.current = [];
-
-      placesData.forEach((place) => {
-        const markerElement = document.createElement("div");
-        markerElement.className = "map-marker";
-        markerElement.dataset.id = place.id;
-
-        const marker = new maplibregl.Marker({ element: markerElement })
-          .setLngLat(place.coordinates)
-          .addTo(map.current);
-
-        markerRefs.current.push(marker);
-
-        // POPUP AND SIDEBAR LOGIC
-        markerElement.addEventListener("click", () => {
-          const popupContent = `
+    // POPUP AND SIDEBAR LOGIC
+    markerElement.addEventListener("click", () => {
+      const popupContent = `
             <div style="padding: 5px; max-width: 250px;">
               <h3 style="font-weight: bold; margin-bottom: 5px;">${place.name}</h3>
               <p style="margin-bottom: 10px; font-size: 0.9em;">${place.description}</p>
@@ -62,21 +36,51 @@ const MapContainer = () => {
             </div>
           `;
 
-          const popup = new maplibregl.Popup({ offset: 25 })
-            .setLngLat(place.coordinates)
-            .setHTML(popupContent)
-            .addTo(map.current);
+      const popup = new maplibregl.Popup({ offset: 25 })
+        .setLngLat(place.coordinates)
+        .setHTML(popupContent)
+        .addTo(mapInstance);
 
-          popup.on("open", () => {
-            document
-              .getElementById(`view-details-${place.id}`)
-              .addEventListener("click", () => {
-                openSidebar(place.id);
-                popup.remove();
-              });
+      popup.on("open", () => {
+        document
+          .getElementById(`view-details-${place.id}`)
+          .addEventListener("click", () => {
+            openSidebar(place.id);
+            popup.remove();
           });
-        });
       });
+    });
+  });
+};
+
+const MapContainer = () => {
+  const mapContainer = useRef(null);
+  const map = useRef(null);
+
+  const { openSidebar, isDarkMode } = appStore();
+  const markerRefs = useRef([]);
+
+  // 1. EFFECT for Initial Map Setup (Runs ONCE)
+  useEffect(() => {
+    if (map.current) return;
+
+    const initialStyleUrl = `https://api.maptiler.com/maps/basic/style.json?key=YOUR_MAPTILER_API_KEY`;
+
+    map.current = new maplibregl.Map({
+      container: mapContainer.current,
+      style: initialStyleUrl,
+      center: POLAND_CENTER,
+      zoom: 6,
+      minZoom: 5,
+      maxBounds: [
+        [10, 45],
+        [30, 58],
+      ],
+    });
+
+    // Add markers only when the initial style is fully loaded
+    map.current.on("style.load", () => {
+      initializeMarkers(map.current, openSidebar, markerRefs);
     });
 
     // Clean up function: removes map instance when component unmounts
@@ -84,17 +88,27 @@ const MapContainer = () => {
       markerRefs.current.forEach((marker) => marker.remove());
       map.current?.remove();
     };
-  }, [openSidebar]);
+  }, [openSidebar]); // openSidebar is stable, effectively runs once
 
   // 2. EFFECT for Theme Change (Runs when isDarkMode changes)
   useEffect(() => {
     if (map.current) {
-      // Use 'dark' for dark mode and 'basic' for light mode
+      // Change to 'dark' for dark mode and 'basic' for light mode
       const styleId = isDarkMode ? "dark" : "basic";
-      const styleUrl = `https://api.maptiler.com/maps/${styleId}/style.json?key=qouYd4hDXkrIIxMJOXH8`;
+      const styleUrl = `https://api.maptiler.com/maps/${styleId}/style.json?key=YOUR_MAPTILER_API_KEY`;
+
+      // Remove markers immediately to prepare for style change
+      markerRefs.current.forEach((marker) => marker.remove());
+      markerRefs.current = [];
+
       map.current.setStyle(styleUrl);
+
+      // Re-add markers only when the new style is fully loaded
+      map.current.once("style.load", () => {
+        initializeMarkers(map.current, openSidebar, markerRefs);
+      });
     }
-  }, [isDarkMode]); // Re-run when dark mode is toggled
+  }, [isDarkMode, openSidebar]); // Re-run when dark mode is toggled
 
   return (
     <div
