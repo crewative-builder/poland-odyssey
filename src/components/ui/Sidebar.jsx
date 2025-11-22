@@ -21,19 +21,23 @@ const YoutubeEmbed = ({ id }) => (
 );
 
 const Sidebar = () => {
-  const { selectedPlaceId, closeSidebar } = appStore();
-  const [showVideo, setShowVideo] = useState(false); // New state for video toggle
+  const { selectedPlaceId, closeSidebar, isDarkMode } = appStore();
+  const [showVideo, setShowVideo] = useState(false); // State for video toggle
 
   const place = placesData.find((p) => p.id === selectedPlaceId);
 
-  // Reset showVideo when a new place is selected
+  // Reset showVideo state when a new place is selected
   React.useEffect(() => {
     setShowVideo(false);
   }, [selectedPlaceId]);
 
   const sidebarClass = `
-    fixed top-0 right-0 h-full w-96 bg-slate-900/95 backdrop-blur-sm shadow-2xl z-20 
-    transition-transform duration-300 text-white
+    fixed top-0 right-0 h-full w-96 shadow-2xl z-40 
+    transition-transform duration-300 
+    
+    // Theme-Aware Styles
+    dark:bg-slate-900/95 dark:text-white bg-white/95 text-gray-900 backdrop-blur-sm
+    
     ${selectedPlaceId ? "translate-x-0" : "translate-x-full"}
   `;
 
@@ -42,11 +46,14 @@ const Sidebar = () => {
   return (
     <div className={sidebarClass}>
       <div className="p-6 h-full flex flex-col">
-        <div className="flex justify-between items-center mb-4 pb-4 border-b border-slate-700">
-          <h2 className="text-3xl font-serif text-amber-300">{place.name}</h2>
+        {/* --- Header & Close Button --- */}
+        <div className="flex justify-between items-center mb-4 pb-4 border-b dark:border-slate-700 border-gray-300">
+          <h2 className="text-3xl font-serif text-amber-500 dark:text-amber-300">
+            {place.name}
+          </h2>
           <button
             onClick={closeSidebar}
-            className="text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-700 transition"
+            className="dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-700 text-gray-500 hover:text-black hover:bg-gray-100 p-1 rounded-full transition"
           >
             <X size={24} />
           </button>
@@ -65,10 +72,13 @@ const Sidebar = () => {
         </div>
 
         {/* --- Place Details --- */}
-        <p className="text-slate-300 mb-6 flex-grow">{place.description}</p>
+        <p className="dark:text-slate-300 text-gray-700 mb-6 flex-grow">
+          {place.description}
+        </p>
 
         {/* --- Action Buttons --- */}
         <div className="mt-auto space-y-3">
+          {/* Show Video Button */}
           <button
             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition duration-150 shadow-lg flex items-center justify-center space-x-2"
             onClick={() => setShowVideo(!showVideo)}
@@ -77,6 +87,7 @@ const Sidebar = () => {
             <span>{showVideo ? "Hide Video" : "Show Video"}</span>
           </button>
 
+          {/* 3D View Button */}
           <button
             className="w-full bg-gray-700 hover:bg-gray-800 text-white font-bold py-3 rounded-lg transition duration-150 shadow-lg"
             onClick={() => console.log("Future: Enter 3D View")}

@@ -1,8 +1,3 @@
-import React, { useRef, useEffect } from "react";
-import maplibregl from "maplibre-gl";
-import placesData from "../../data/places.json";
-import appStore from "../../store/appStore";
-
 // Poland geographical center
 const POLAND_CENTER = [19.15, 51.92];
 
@@ -10,16 +5,29 @@ const MapContainer = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
 
-  const { openSidebar } = appStore();
+  const { openSidebar, isDarkMode } = appStore();
+  const markerRefs = useRef([]); // Use a ref to keep track of markers
 
+  // Fix 1: Apply Dark/Light map style change
+  useEffect(() => {
+    if (map.current) {
+      // Change map style based on theme mode
+      const styleId = isDarkMode ? "dark-v2" : "streets-v2";
+      map.current.setStyle(
+        `https://api.maptiler.com/maps/${styleId}/style.json?key=YOUR_MAPTILER_API_KEY`
+      );
+    }
+  }, [isDarkMode]);
+
+  // Fix 2: Initialize Map and Markers ONLY ONCE
   useEffect(() => {
     if (map.current) return;
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      // *** 🚨 CRITICAL: REPLACE THIS WITH YOUR ACTUAL MAPTILER KEY/STYLE URL ***
-      style: `https://api.maptiler.com/maps/streets-v2/style.json?key=qouYd4hDXkrIIxMJOXH8`,
-      center: POLAND_CENTER, // New Center
+      // Initial style (will be overridden by the theme useEffect)
+      style: `https://api.maptiler.com/maps/streets-v2/style.json?key=YOUR_MAPTILER_API_KEY`,
+      center: POLAND_CENTER,
       zoom: 6,
       minZoom: 5,
       maxBounds: [
@@ -29,15 +37,22 @@ const MapContainer = () => {
     });
 
     map.current.on("load", () => {
+      // Clean up previous markers if they exist
+      markerRefs.current.forEach((marker) => marker.remove());
+      markerRefs.current = [];
+
       placesData.forEach((place) => {
         const markerElement = document.createElement("div");
         markerElement.className = "map-marker";
+        markerElement.dataset.id = place.id; // Added data-id for better tracking
 
         const marker = new maplibregl.Marker({ element: markerElement })
           .setLngLat(place.coordinates)
           .addTo(map.current);
 
-        // POPUP AND SIDEBAR LOGIC
+        markerRefs.current.push(marker);
+
+        // POPUP AND SIDEBAR LOGIC (Remains the same)
         markerElement.addEventListener("click", () => {
           const popupContent = `
             <div style="padding: 5px; max-width: 250px;">
@@ -66,8 +81,12 @@ const MapContainer = () => {
       });
     });
 
-    return () => map.current?.remove();
-  }, [openSidebar]);
+    // Clean up function: removes map instance when component unmounts
+    return () => {
+      markerRefs.current.forEach((marker) => marker.remove());
+      map.current?.remove();
+    };
+  }, []); // Empty dependency array ensures it runs only ONCE
 
   return (
     <div
