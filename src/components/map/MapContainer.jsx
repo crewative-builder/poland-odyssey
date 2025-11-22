@@ -64,7 +64,7 @@ const MapContainer = () => {
   useEffect(() => {
     if (map.current) return;
 
-    const initialStyleUrl = `https://api.maptiler.com/maps/basic/style.json?key=YOUR_MAPTILER_API_KEY`;
+    const initialStyleUrl = `https://api.maptiler.com/maps/basic/style.json?key=qouYd4hDXkrIIxMJOXH8`;
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
@@ -95,7 +95,7 @@ const MapContainer = () => {
     if (map.current) {
       // Change to 'dark' for dark mode and 'basic' for light mode
       const styleId = isDarkMode ? "dark" : "basic";
-      const styleUrl = `https://api.maptiler.com/maps/${styleId}/style.json?key=YOUR_MAPTILER_API_KEY`;
+      const styleUrl = `https://api.maptiler.com/maps/${styleId}/style.json?key=qouYd4hDXkrIIxMJOXH8`;
 
       // Remove markers immediately to prepare for style change
       markerRefs.current.forEach((marker) => marker.remove());
