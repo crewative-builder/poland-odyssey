@@ -4,6 +4,7 @@ const appStore = create((set) => ({
   selectedPlaceId: null,
   isSidebarOpen: false,
   currentMode: "2D",
+  isDarkMode: true, // Start in Dark Mode by default (futuristic feel)
 
   openSidebar: (id) =>
     set({
@@ -16,6 +17,11 @@ const appStore = create((set) => ({
       isSidebarOpen: false,
       selectedPlaceId: null,
     }),
+
+  toggleTheme: () =>
+    set((state) => ({
+      isDarkMode: !state.isDarkMode,
+    })),
 }));
 
 export default appStore;
