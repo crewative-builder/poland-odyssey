@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from "react"; // <--- CRITICAL FIX: Make sure useRef and useEffect are here!
+import React, { useRef, useEffect } from "react"; // CRITICAL: Hooks are imported
 import maplibregl from "maplibre-gl";
-import "maplibregl/dist/maplibre-gl.css";
+// NO CSS IMPORT HERE (It should be in src/index.css)
 import placesData from "../../data/places.json";
 import appStore from "../../store/appStore";
 
@@ -14,25 +14,16 @@ const MapContainer = () => {
   const { openSidebar, isDarkMode } = appStore();
   const markerRefs = useRef([]); // Use a ref to keep track of markers
 
-  // Fix 1: Apply Dark/Light map style change
-  useEffect(() => {
-    if (map.current) {
-      // Change map style based on theme mode
-      const styleId = isDarkMode ? "dark-v2" : "streets-v2";
-      map.current.setStyle(
-        `https://api.maptiler.com/maps/${styleId}/style.json?key=YOUR_MAPTILER_API_KEY`
-      );
-    }
-  }, [isDarkMode]);
-
-  // Fix 2: Initialize Map and Markers ONLY ONCE
+  // 1. EFFECT for Initial Map Setup (Runs ONCE)
   useEffect(() => {
     if (map.current) return;
 
+    // Use a default light style for initial render
+    const initialStyleUrl = `https://api.maptiler.com/maps/streets-v2/style.json?key=qouYd4hDXkrIIxMJOXH8`;
+
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      // Initial style (will be overridden by the theme useEffect)
-      style: `https://api.maptiler.com/maps/streets-v2/style.json?key=YOUR_MAPTILER_API_KEY`,
+      style: initialStyleUrl,
       center: POLAND_CENTER,
       zoom: 6,
       minZoom: 5,
@@ -43,14 +34,11 @@ const MapContainer = () => {
     });
 
     map.current.on("load", () => {
-      // Clean up previous markers if they exist
-      markerRefs.current.forEach((marker) => marker.remove());
-      markerRefs.current = [];
-
+      // Add all markers once the map style is loaded
       placesData.forEach((place) => {
         const markerElement = document.createElement("div");
         markerElement.className = "map-marker";
-        markerElement.dataset.id = place.id; // Added data-id for better tracking
+        markerElement.dataset.id = place.id;
 
         const marker = new maplibregl.Marker({ element: markerElement })
           .setLngLat(place.coordinates)
@@ -58,7 +46,7 @@ const MapContainer = () => {
 
         markerRefs.current.push(marker);
 
-        // POPUP AND SIDEBAR LOGIC (Remains the same)
+        // POPUP AND SIDEBAR LOGIC
         markerElement.addEventListener("click", () => {
           const popupContent = `
             <div style="padding: 5px; max-width: 250px;">
@@ -92,7 +80,16 @@ const MapContainer = () => {
       markerRefs.current.forEach((marker) => marker.remove());
       map.current?.remove();
     };
-  }, []); // Empty dependency array ensures it runs only ONCE
+  }, [openSidebar]); // openSidebar is stable, effectively runs once
+
+  // 2. EFFECT for Theme Change (Runs when isDarkMode changes)
+  useEffect(() => {
+    if (map.current) {
+      const styleId = isDarkMode ? "dark-v2" : "streets-v2";
+      const styleUrl = `https://api.maptiler.com/maps/${styleId}/style.json?key=qouYd4hDXkrIIxMJOXH8`;
+      map.current.setStyle(styleUrl);
+    }
+  }, [isDarkMode]); // Re-run when dark mode is toggled
 
   return (
     <div
