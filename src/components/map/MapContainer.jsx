@@ -89,7 +89,7 @@ const MapContainer = () => {
     // FINAL, high-compatibility styles: 'positron' for light, 'dark-matter' for dark
     // If 'dark-matter' fails, it will likely fall back to a generic simple style.
     const styleId = isDark ? "dark-matter" : "positron";
-    return `https://api.maptiler.com/maps/${styleId}/style.json?key=YOUR_MAPTILER_API_KEY`;
+    return `https://api.maptiler.com/maps/${styleId}/style.json?key=qouYd4hDXkrIIxMJOXH8`;
   };
 
   // 1. EFFECT for Initial Map Setup (Runs ONCE)
