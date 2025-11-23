@@ -59,28 +59,19 @@ const setMapLanguage = (mapInstance) => {
   if (!layers) return;
 
   layers.forEach((layer) => {
-    // Target layers that contain text labels
     if (
       layer.layout &&
       layer.layout["text-field"] &&
       !layer.id.includes("raster")
     ) {
       try {
-        // Try setting to English name property
+        // Try setting to English name property (name_en is most common)
         mapInstance.setLayoutProperty(layer.id, "text-field", [
           "get",
           "name_en",
         ]);
       } catch (e) {
-        // If setting name_en fails, try name:en (different style convention)
-        try {
-          mapInstance.setLayoutProperty(layer.id, "text-field", [
-            "get",
-            "name:en",
-          ]);
-        } catch (e2) {
-          // Ignore, move to next layer
-        }
+        // If that fails, the layer is likely not present or the style doesn't support it.
       }
     }
   });
@@ -95,9 +86,10 @@ const MapContainer = () => {
 
   // Function to determine the style URL
   const getStyleUrl = (isDark) => {
-    // FINAL ATTEMPT: Using the highly compatible 'basic' and 'outdoor' styles
-    const styleId = isDark ? "outdoor" : "basic";
-    return `https://api.maptiler.com/maps/${styleId}/style.json?key=qouYd4hDXkrIIxMJOXH8`;
+    // FINAL, high-compatibility styles: 'positron' for light, 'dark-matter' for dark
+    // If 'dark-matter' fails, it will likely fall back to a generic simple style.
+    const styleId = isDark ? "dark-matter" : "positron";
+    return `https://api.maptiler.com/maps/${styleId}/style.json?key=YOUR_MAPTILER_API_KEY`;
   };
 
   // 1. EFFECT for Initial Map Setup (Runs ONCE)
@@ -106,7 +98,7 @@ const MapContainer = () => {
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: getStyleUrl(isDarkMode), // Use style based on initial theme state
+      style: getStyleUrl(isDarkMode),
       center: POLAND_CENTER,
       zoom: INITIAL_ZOOM,
       minZoom: 5,
@@ -127,7 +119,7 @@ const MapContainer = () => {
       markerRefs.current.forEach((marker) => marker.remove());
       map.current?.remove();
     };
-  }, [openSidebar]); // Do NOT include isDarkMode in initial useEffect deps
+  }, [openSidebar]);
 
   // 2. EFFECT for Theme Change (Runs when isDarkMode changes)
   useEffect(() => {

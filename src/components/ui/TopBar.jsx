@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Sun, Moon, Map, Search, X } from "lucide-react";
+import { Sun, Moon, Map, Settings, Search, Globe } from "lucide-react";
 import appStore from "../../store/appStore";
 import placesData from "../../data/places.json";
 
 const TopBar = () => {
-  const { isDarkMode, toggleTheme, closeSidebar, openSidebar } = appStore();
+  const { isDarkMode, toggleTheme, openSidebar } = appStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   // Simple search function
   const handleSearch = (term) => {
@@ -19,6 +20,15 @@ const TopBar = () => {
     } else {
       setSearchResults([]);
     }
+    // Only show results dropdown if there is a term
+    setIsSearchVisible(term.length > 0);
+  };
+
+  const handleSelectPlace = (place) => {
+    openSidebar(place.id);
+    setSearchResults([]);
+    setSearchTerm(place.name);
+    setIsSearchVisible(false);
   };
 
   const buttonStyle =
@@ -54,11 +64,13 @@ const TopBar = () => {
             placeholder="Search places..."
             value={searchTerm}
             onChange={(e) => handleSearch(e.target.value)}
+            onFocus={() => setIsSearchVisible(true)}
+            onBlur={() => setTimeout(() => setIsSearchVisible(false), 200)} // Delay hide to allow click
             className={`py-2 pl-10 pr-4 rounded-full w-48 transition duration-200 
               ${
                 isDarkMode
-                  ? "bg-gray-700/70 text-white border-indigo-700"
-                  : "bg-gray-100/70 text-gray-800 border-gray-300"
+                  ? "bg-gray-700/70 text-white border-indigo-700 placeholder-gray-400"
+                  : "bg-gray-100/70 text-gray-800 border-gray-300 placeholder-gray-500"
               } 
               focus:ring-2 focus:ring-indigo-500 focus:outline-none`}
           />
@@ -84,7 +96,7 @@ const TopBar = () => {
           )}
         </button>
 
-        {/* Map Mode Toggle (Placeholder) */}
+        {/* Map Mode Toggle (Placeholder - Functional in Phase 3) */}
         <button
           className={`${buttonStyle} ${
             isDarkMode
@@ -96,10 +108,23 @@ const TopBar = () => {
         >
           <Map className={iconStyle} />
         </button>
+
+        {/* Settings Button (Placeholder) - THIS WAS MISSING */}
+        <button
+          className={`${buttonStyle} ${
+            isDarkMode
+              ? "hover:bg-indigo-600 bg-gray-700"
+              : "hover:bg-gray-200 bg-white"
+          }`}
+          onClick={() => console.log("Future: Open Settings")}
+          title="Settings"
+        >
+          <Settings className={iconStyle} />
+        </button>
       </div>
 
       {/* Search Results Dropdown */}
-      {searchResults.length > 0 && (
+      {isSearchVisible && searchResults.length > 0 && (
         <div
           className={`absolute top-full mt-2 w-full max-h-60 overflow-y-auto rounded-lg shadow-xl 
           ${
@@ -111,14 +136,12 @@ const TopBar = () => {
           {searchResults.map((place) => (
             <button
               key={place.id}
-              onClick={() => {
-                openSidebar(place.id);
-                setSearchResults([]);
-                setSearchTerm(place.name);
-              }}
-              className="w-full text-left p-3 hover:bg-indigo-500 hover:text-white transition duration-150"
+              // Use onMouseDown instead of onClick to beat the onBlur timer
+              onMouseDown={() => handleSelectPlace(place)}
+              className="w-full text-left p-3 hover:bg-indigo-500 hover:text-white transition duration-150 flex items-center space-x-2"
             >
-              {place.name}
+              <Globe size={16} className="flex-shrink-0" />
+              <span>{place.name}</span>
             </button>
           ))}
         </div>
