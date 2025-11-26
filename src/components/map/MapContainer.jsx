@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react"; // Removed useState
 import maplibregl from "maplibre-gl";
 import placesData from "../../data/places.json";
 import appStore from "../../store/appStore";
@@ -6,12 +6,15 @@ import appStore from "../../store/appStore";
 // Poland geographical center
 const POLAND_CENTER = [19.15, 51.92];
 const INITIAL_ZOOM = 6;
+const MAPTILER_KEY = "YOUR_MAPTILER_API_KEY"; // Define key once
 
 // Function to initialize and add all markers
 const initializeMarkers = (mapInstance, openSidebar, markerRefs) => {
+  // 1. Remove any existing markers
   markerRefs.current.forEach((marker) => marker.remove());
   markerRefs.current = [];
 
+  // 2. Add all new markers
   placesData.forEach((place) => {
     const markerElement = document.createElement("div");
     markerElement.className = "map-marker";
@@ -23,7 +26,7 @@ const initializeMarkers = (mapInstance, openSidebar, markerRefs) => {
 
     markerRefs.current.push(marker);
 
-    // POPUP AND SIDEBAR LOGIC
+    // POPUP AND SIDEBAR LOGIC (UNCHANGED)
     markerElement.addEventListener("click", () => {
       const popupContent = `
             <div style="padding: 5px; max-width: 250px;">
@@ -54,24 +57,23 @@ const initializeMarkers = (mapInstance, openSidebar, markerRefs) => {
 
 // Function to set map labels to English
 const setMapLanguage = (mapInstance) => {
-  // Attempt to set text to English using 'name_en' property on various layers
-  const layers = mapInstance.getStyle().layers;
-  if (!layers) return;
+  const style = mapInstance.getStyle();
+  if (!style || !style.layers) return;
 
-  layers.forEach((layer) => {
+  style.layers.forEach((layer) => {
+    // Target layers that contain text labels (MapTiler standard: 'name_en')
     if (
       layer.layout &&
       layer.layout["text-field"] &&
       !layer.id.includes("raster")
     ) {
       try {
-        // Try setting to English name property (name_en is most common)
         mapInstance.setLayoutProperty(layer.id, "text-field", [
           "get",
           "name_en",
         ]);
       } catch (e) {
-        // If that fails, the layer is likely not present or the style doesn't support it.
+        // Fails silently if layer is not present, which is fine
       }
     }
   });
@@ -86,10 +88,10 @@ const MapContainer = () => {
 
   // Function to determine the style URL
   const getStyleUrl = (isDark) => {
-    // FINAL, high-compatibility styles: 'positron' for light, 'dark-matter' for dark
-    // If 'dark-matter' fails, it will likely fall back to a generic simple style.
-    const styleId = isDark ? "dark-matter" : "positron";
-    return `https://api.maptiler.com/maps/${styleId}/style.json?key=qouYd4hDXkrIIxMJOXH8`;
+    // Light mode: 'positron' (Confirmed working on your map)
+    // Dark mode: 'dataviz-dark' (A highly compatible dark style if dark-matter fails)
+    const styleId = isDark ? "dataviz-dark" : "positron";
+    return `https://api.maptiler.com/maps/${styleId}/style.json?key=${MAPTILER_KEY}`;
   };
 
   // 1. EFFECT for Initial Map Setup (Runs ONCE)
@@ -98,7 +100,7 @@ const MapContainer = () => {
 
     map.current = new maplibregl.Map({
       container: mapContainer.current,
-      style: getStyleUrl(isDarkMode),
+      style: getStyleUrl(isDarkMode), // Use style based on initial theme state
       center: POLAND_CENTER,
       zoom: INITIAL_ZOOM,
       minZoom: 5,
@@ -108,8 +110,8 @@ const MapContainer = () => {
       ],
     });
 
-    // Add markers and set language only when the initial style is fully loaded
-    map.current.once("style.load", () => {
+    // Use 'idle' event to ensure everything is loaded, drawn, and ready
+    map.current.once("idle", () => {
       initializeMarkers(map.current, openSidebar, markerRefs);
       setMapLanguage(map.current);
     });
@@ -119,20 +121,17 @@ const MapContainer = () => {
       markerRefs.current.forEach((marker) => marker.remove());
       map.current?.remove();
     };
-  }, [openSidebar]);
+  }, [openSidebar, isDarkMode]);
+  // isDarkMode is included here so the initial style is chosen correctly on first load.
 
   // 2. EFFECT for Theme Change (Runs when isDarkMode changes)
   useEffect(() => {
     if (map.current) {
-      // Remove markers immediately before style change
-      markerRefs.current.forEach((marker) => marker.remove());
-      markerRefs.current = [];
-
       // Load the new style
       map.current.setStyle(getStyleUrl(isDarkMode));
 
-      // Re-add markers and set language once the new style is loaded
-      map.current.once("style.load", () => {
+      // Remove markers immediately and re-add them when the new style is fully loaded and drawn
+      map.current.once("idle", () => {
         initializeMarkers(map.current, openSidebar, markerRefs);
         setMapLanguage(map.current);
       });

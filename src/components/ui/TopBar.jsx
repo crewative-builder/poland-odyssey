@@ -8,6 +8,7 @@ const TopBar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false); // New state for settings
 
   // Simple search function
   const handleSearch = (term) => {
@@ -96,7 +97,7 @@ const TopBar = () => {
           )}
         </button>
 
-        {/* Map Mode Toggle (Placeholder - Functional in Phase 3) */}
+        {/* Map Mode Toggle (Placeholder) */}
         <button
           className={`${buttonStyle} ${
             isDarkMode
@@ -109,14 +110,14 @@ const TopBar = () => {
           <Map className={iconStyle} />
         </button>
 
-        {/* Settings Button (Placeholder) - THIS WAS MISSING */}
+        {/* Settings Button (THIS WAS MISSING IN YOUR VIEW) */}
         <button
           className={`${buttonStyle} ${
             isDarkMode
               ? "hover:bg-indigo-600 bg-gray-700"
               : "hover:bg-gray-200 bg-white"
           }`}
-          onClick={() => console.log("Future: Open Settings")}
+          onClick={() => setIsSettingsOpen(!isSettingsOpen)} // Added state toggle
           title="Settings"
         >
           <Settings className={iconStyle} />
@@ -144,6 +145,21 @@ const TopBar = () => {
               <span>{place.name}</span>
             </button>
           ))}
+        </div>
+      )}
+
+      {/* Settings Panel (Placeholder for future feature) */}
+      {isSettingsOpen && (
+        <div
+          className={`absolute top-full right-0 mt-2 p-4 w-48 rounded-lg shadow-xl 
+          ${
+            isDarkMode
+              ? "bg-gray-800 border-indigo-600 text-white"
+              : "bg-white border-gray-300 text-gray-800"
+          } border`}
+        >
+          <p className="font-bold mb-2">Map Settings</p>
+          <p className="text-sm italic">Feature coming soon!</p>
         </div>
       )}
     </div>
