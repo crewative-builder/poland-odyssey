@@ -6,7 +6,7 @@ import appStore from "../../store/appStore";
 // Poland geographical center
 const POLAND_CENTER = [19.15, 51.92];
 const INITIAL_ZOOM = 6;
-const MAPTILER_KEY = "YOUR_MAPTILER_API_KEY"; // Define key once
+const MAPTILER_KEY = "qouYd4hDXkrIIxMJOXH8"; // Define key once
 
 // Function to initialize and add all markers
 const initializeMarkers = (mapInstance, openSidebar, markerRefs) => {
