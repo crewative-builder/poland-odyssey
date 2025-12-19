@@ -13,37 +13,47 @@ html,
   overflow: hidden;
 }
 
-/* The invisible container that MapLibre anchors to the coordinate */
-.marker-container {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+/* The Point of Interest (The precise dot) */
+.marker-dot {
+  width: 8px;
+  height: 8px;
+  background: #1e1b4b; /* Dark indigo dot */
+  border-radius: 50%;
+  border: 2px solid white;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
 }
 
-/* The visible pointed pin */
+/* The Modern Pin (The indigo marker) */
 .map-marker {
-  width: 24px;
-  height: 24px;
+  width: 36px; /* Increased size for better visibility */
+  height: 36px;
   border-radius: 50% 50% 50% 0;
   background: #6366f1;
   border: 2px solid white;
-  transform: rotate(-45deg); /* Only the shape rotates, not the anchor */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  position: relative;
+  transform: rotate(-45deg);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  bottom: 12px; /* Sits right above the dot */
+  left: 50%;
+  margin-left: -18px; /* Half of width to center it */
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-/* The white dot inside */
-.map-marker::after {
-  content: "";
-  width: 8px;
-  height: 8px;
-  background: white;
-  position: absolute;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+/* Hover effect to make it even easier to see */
+.marker-wrapper:hover .map-marker {
+  background: #4f46e5;
+  transform: rotate(-45deg) scale(1.1) translateY(-5px);
+}
+
+/* Container to keep both the pin and the dot together */
+.marker-wrapper {
+  width: 40px;
+  height: 60px;
+  position: relative;
+  cursor: pointer;
 }

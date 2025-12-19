@@ -16,37 +16,41 @@ const MapContainer = () => {
       style:
         "https://api.maptiler.com/maps/streets-v2/style.json?key=qouYd4hDXkrIIxMJOXH8",
       center: [19.15, 51.92],
-      zoom: 6,
-      trackResize: true, // Ensures map updates if window size changes
+      zoom: 6.5, // Slightly zoomed in from 6.0 for better visibility
+      trackResize: true,
     });
 
     map.current.on("load", () => {
-      // Force a resize calculation to prevent drifting on initial load
       map.current.resize();
 
       placesData.forEach((place) => {
-        // Create a stable wrapper
-        const container = document.createElement("div");
-        container.className = "marker-container";
+        // Create the Wrapper
+        const wrapper = document.createElement("div");
+        wrapper.className = "marker-wrapper";
 
-        // Create the actual pin
+        // Create the Precise Dot at the bottom
+        const dot = document.createElement("div");
+        dot.className = "marker-dot";
+        wrapper.appendChild(dot);
+
+        // Create the Indigo Pin above it
         const pin = document.createElement("div");
         pin.className = "map-marker";
-        container.appendChild(pin);
+        wrapper.appendChild(pin);
 
-        // Add Marker with explicit 'bottom' anchor
+        // Add Marker centered on the dot
         new maplibregl.Marker({
-          element: container,
-          anchor: "bottom", // CRITICAL: This keeps the point on the coordinate
+          element: wrapper,
+          anchor: "bottom", // The dot is at the bottom of the wrapper
         })
           .setLngLat(place.coordinates)
           .addTo(map.current);
 
-        container.addEventListener("click", () => {
+        wrapper.addEventListener("click", () => {
           map.current.flyTo({
             center: place.coordinates,
             zoom: 9,
-            padding: { right: 300 }, // Keeps point visible when sidebar opens
+            padding: { right: 300 },
           });
           openSidebar(place.id);
         });
