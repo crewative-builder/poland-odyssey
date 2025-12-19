@@ -5,14 +5,9 @@ import TopBar from "./components/ui/TopBar";
 
 function App() {
   return (
-    <main className="relative w-screen h-screen">
-      {/* Floating Header */}
+    <main className="relative w-screen h-screen overflow-hidden">
       <TopBar />
-
-      {/* Full Screen Map */}
       <MapContainer />
-
-      {/* Slide-out Info Panel */}
       <Sidebar />
     </main>
   );

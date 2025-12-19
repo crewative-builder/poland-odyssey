@@ -16,42 +16,23 @@ const MapContainer = () => {
       style:
         "https://api.maptiler.com/maps/streets-v2/style.json?key=qouYd4hDXkrIIxMJOXH8",
       center: [19.15, 51.92],
-      zoom: 6.5, // Slightly zoomed in from 6.0 for better visibility
-      trackResize: true,
+      zoom: 6,
     });
 
     map.current.on("load", () => {
-      map.current.resize();
-
       placesData.forEach((place) => {
-        // Create the Wrapper
-        const wrapper = document.createElement("div");
-        wrapper.className = "marker-wrapper";
+        const el = document.createElement("div");
+        el.className = "map-marker";
 
-        // Create the Precise Dot at the bottom
-        const dot = document.createElement("div");
-        dot.className = "marker-dot";
-        wrapper.appendChild(dot);
-
-        // Create the Indigo Pin above it
-        const pin = document.createElement("div");
-        pin.className = "map-marker";
-        wrapper.appendChild(pin);
-
-        // Add Marker centered on the dot
         new maplibregl.Marker({
-          element: wrapper,
-          anchor: "bottom", // The dot is at the bottom of the wrapper
+          element: el,
+          anchor: "bottom", // This stops the drift!
         })
           .setLngLat(place.coordinates)
           .addTo(map.current);
 
-        wrapper.addEventListener("click", () => {
-          map.current.flyTo({
-            center: place.coordinates,
-            zoom: 9,
-            padding: { right: 300 },
-          });
+        el.addEventListener("click", () => {
+          map.current.flyTo({ center: place.coordinates, zoom: 8 });
           openSidebar(place.id);
         });
       });

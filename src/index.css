@@ -13,47 +13,25 @@ html,
   overflow: hidden;
 }
 
-/* The Point of Interest (The precise dot) */
-.marker-dot {
-  width: 8px;
-  height: 8px;
-  background: #1e1b4b; /* Dark indigo dot */
-  border-radius: 50%;
-  border: 2px solid white;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
-}
-
-/* The Modern Pin (The indigo marker) */
+/* Single Modern Pointed Pin */
 .map-marker {
-  width: 36px; /* Increased size for better visibility */
-  height: 36px;
+  width: 32px; /* Fixed size: easy to see but not huge */
+  height: 32px;
   border-radius: 50% 50% 50% 0;
-  background: #6366f1;
+  background: #6366f1; /* Indigo */
   border: 2px solid white;
   transform: rotate(-45deg);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+/* The small white center for a professional look */
+.map-marker::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  margin: 9px 0 0 9px;
+  background: white;
   position: absolute;
-  bottom: 12px; /* Sits right above the dot */
-  left: 50%;
-  margin-left: -18px; /* Half of width to center it */
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-/* Hover effect to make it even easier to see */
-.marker-wrapper:hover .map-marker {
-  background: #4f46e5;
-  transform: rotate(-45deg) scale(1.1) translateY(-5px);
-}
-
-/* Container to keep both the pin and the dot together */
-.marker-wrapper {
-  width: 40px;
-  height: 60px;
-  position: relative;
-  cursor: pointer;
+  border-radius: 50%;
 }
