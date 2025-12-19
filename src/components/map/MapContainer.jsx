@@ -14,7 +14,7 @@ const MapContainer = () => {
     map.current = new maplibregl.Map({
       container: mapContainer.current,
       style:
-        "https://api.maptiler.com/maps/streets-v2/style.json?key=YOUR_MAPTILER_API_KEY",
+        "https://api.maptiler.com/maps/streets-v2/style.json?key=qouYd4hDXkrIIxMJOXH8",
       center: [19.15, 51.92],
       zoom: 6,
       trackResize: true, // Ensures map updates if window size changes
