@@ -1,39 +1,36 @@
-/* ADD MapLibre CSS import here (must be first) */
 @import "maplibre-gl/dist/maplibre-gl.css";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* --- Custom Map Styles --- */
-
-/* --- Custom Map Styles --- */
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 
 .map-marker {
-  /* Futuristic Glowing Pin SVG */
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="%234f46e5" stroke="%23ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin"><path d="M12 1.5C8.84 1.5 6.25 4.09 6.25 7.25c0 4.14 5.75 12.25 5.75 12.25s5.75-8.11 5.75-12.25c0-3.16-2.59-5.75-5.75-5.75z"/><circle cx="12" cy="7.25" r="2.75"/></svg>');
-  background-size: cover;
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50% 50% 50% 0;
+  background: #ef4444;
+  position: absolute;
+  transform: rotate(-45deg);
+  border: 2px solid white;
   cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
 
-  /* Applying a glow effect */
-  box-shadow: 0 0 10px 3px rgba(79, 70, 229, 0.8),
-    0 0 20px 5px rgba(129, 140, 248, 0.6); /* Tailwind indigo-600/500 glow */
+.map-marker::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  margin: 7px 0 0 7px;
+  background: white;
+  position: absolute;
   border-radius: 50%;
-  transition: transform 0.2s;
-}
-
-.map-marker:hover {
-  transform: scale(1.2);
-}
-
-.map-container {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-}
-.maplibregl-canvas {
-  width: 100% !important;
-  height: 100% !important;
 }
