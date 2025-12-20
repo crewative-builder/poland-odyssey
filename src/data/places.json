@@ -2,35 +2,35 @@
   {
     "id": "warsaw",
     "name": "Warsaw",
-    "coordinates": [21.0122, 52.2297],
+    "coordinates": [21.01221, 52.22971],
     "description": "The capital of Poland, known for its resilient history and the beautifully reconstructed Old Town.",
     "youtubeId": "4G8_yN68pLw"
   },
   {
     "id": "krakow",
     "name": "Kraków",
-    "coordinates": [19.945, 50.0647],
+    "coordinates": [19.9451, 50.06471],
     "description": "The historic royal capital, famous for its medieval architecture and the vast Main Market Square.",
     "youtubeId": "dQw4w9WgXcQ"
   },
   {
     "id": "gdansk",
     "name": "Gdańsk",
-    "coordinates": [18.6466, 54.352],
+    "coordinates": [18.64661, 54.3521],
     "description": "A stunning port city on the Baltic coast, known as the birthplace of the Solidarity movement.",
     "youtubeId": "4G8_yN68pLw"
   },
   {
     "id": "wroclaw",
     "name": "Wrocław",
-    "coordinates": [17.0385, 51.1079],
+    "coordinates": [17.03851, 51.10791],
     "description": "Famous for its hundreds of small dwarf statues and its beautiful Market Square with the Gothic Town Hall.",
     "youtubeId": "dQw4w9WgXcQ"
   },
   {
     "id": "poznan",
     "name": "Poznań",
-    "coordinates": [16.9252, 52.4064],
+    "coordinates": [16.92521, 52.40641],
     "description": "A major center for trade and industry, famous for its Renaissance Old Town and mechanical goats.",
     "youtubeId": "4G8_yN68pLw"
   }
