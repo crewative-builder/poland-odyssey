@@ -24,14 +24,13 @@ html,
 
 /* The actual Indigo Pin */
 .map-marker {
-  width: 24px; /* Reduced size */
+  width: 24px;
   height: 24px;
   background-color: #4f46e5;
   border: 2px solid white;
-  /* This creates the teardrop: 3 rounded corners, 1 sharp */
   border-radius: 50% 50% 50% 0;
-  /* Rotate -45deg to make the sharp corner point down */
-  transform: rotate(-45deg);
+  /* Keep the rotation, but add a 10px downward shift */
+  transform: rotate(-45deg) translate(-10px, 10px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
 }
