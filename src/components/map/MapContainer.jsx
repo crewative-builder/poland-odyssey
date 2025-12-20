@@ -17,22 +17,37 @@ const MapContainer = () => {
         "https://api.maptiler.com/maps/streets-v2/style.json?key=qouYd4hDXkrIIxMJOXH8",
       center: [19.15, 51.92],
       zoom: 6,
+      trackResize: true, // Ensures map updates if window size changes
     });
 
     map.current.on("load", () => {
-      placesData.forEach((place) => {
-        const el = document.createElement("div");
-        el.className = "map-marker";
+      // Force a resize calculation to prevent drifting on initial load
+      map.current.resize();
 
+      placesData.forEach((place) => {
+        // Create a stable wrapper
+        const container = document.createElement("div");
+        container.className = "marker-container";
+
+        // Create the actual pin
+        const pin = document.createElement("div");
+        pin.className = "map-marker";
+        container.appendChild(pin);
+
+        // Add Marker with explicit 'bottom' anchor
         new maplibregl.Marker({
-          element: el,
-          anchor: "bottom", // This stops the drift!
+          element: container,
+          anchor: "bottom", // CRITICAL: This keeps the point on the coordinate
         })
           .setLngLat(place.coordinates)
           .addTo(map.current);
 
-        el.addEventListener("click", () => {
-          map.current.flyTo({ center: place.coordinates, zoom: 8 });
+        container.addEventListener("click", () => {
+          map.current.flyTo({
+            center: place.coordinates,
+            zoom: 9,
+            padding: { right: 300 }, // Keeps point visible when sidebar opens
+          });
           openSidebar(place.id);
         });
       });

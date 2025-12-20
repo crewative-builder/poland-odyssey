@@ -13,25 +13,37 @@ html,
   overflow: hidden;
 }
 
-/* Single Modern Pointed Pin */
-.map-marker {
-  width: 32px; /* Fixed size: easy to see but not huge */
-  height: 32px;
-  border-radius: 50% 50% 50% 0;
-  background: #6366f1; /* Indigo */
-  border: 2px solid white;
-  transform: rotate(-45deg);
+/* The invisible container that MapLibre anchors to the coordinate */
+.marker-container {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
 }
 
-/* The small white center for a professional look */
+/* The visible pointed pin */
+.map-marker {
+  width: 24px;
+  height: 24px;
+  border-radius: 50% 50% 50% 0;
+  background: #6366f1;
+  border: 2px solid white;
+  transform: rotate(-45deg); /* Only the shape rotates, not the anchor */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* The white dot inside */
 .map-marker::after {
   content: "";
-  width: 10px;
-  height: 10px;
-  margin: 9px 0 0 9px;
+  width: 8px;
+  height: 8px;
   background: white;
   position: absolute;
   border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
