@@ -13,20 +13,17 @@ html,
   overflow: hidden;
 }
 
-/* The Clean Indigo Pointed Pin */
+/* Precise Pointy Teardrop */
 .map-marker {
-  width: 36px;
-  height: 36px;
-  border-radius: 50% 50% 50% 0;
-  background: #6366f1; /* Indigo */
+  width: 30px;
+  height: 30px;
+  background-color: #6366f1; /* Indigo */
   border: 2px solid white;
+  /* Top-left, top-right, bottom-right, bottom-left */
+  /* This creates a circle with one sharp corner */
+  border-radius: 50% 50% 50% 0;
+  /* Rotate so the sharp corner points exactly down */
   transform: rotate(-45deg);
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-  transition: transform 0.2s ease;
-}
-
-.map-marker:hover {
-  background: #4f46e5;
-  transform: rotate(-45deg) scale(1.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
