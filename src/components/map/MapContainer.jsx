@@ -14,40 +14,26 @@ const MapContainer = () => {
     map.current = new maplibregl.Map({
       container: mapContainer.current,
       style:
-        "https://api.maptiler.com/maps/streets-v2/style.json?key=qouYd4hDXkrIIxMJOXH8",
+        "https://api.maptiler.com/maps/streets-v2/style.json?key=YOUR_MAPTILER_API_KEY",
       center: [19.15, 51.92],
-      zoom: 6,
-      trackResize: true, // Ensures map updates if window size changes
+      zoom: 6.2,
     });
 
     map.current.on("load", () => {
-      // Force a resize calculation to prevent drifting on initial load
-      map.current.resize();
-
       placesData.forEach((place) => {
-        // Create a stable wrapper
-        const container = document.createElement("div");
-        container.className = "marker-container";
+        const el = document.createElement("div");
+        el.className = "map-marker";
 
-        // Create the actual pin
-        const pin = document.createElement("div");
-        pin.className = "map-marker";
-        container.appendChild(pin);
-
-        // Add Marker with explicit 'bottom' anchor
+        // anchor: 'bottom' ensures the tip of the pin is exactly on the location
         new maplibregl.Marker({
-          element: container,
-          anchor: "bottom", // CRITICAL: This keeps the point on the coordinate
+          element: el,
+          anchor: "bottom",
         })
           .setLngLat(place.coordinates)
           .addTo(map.current);
 
-        container.addEventListener("click", () => {
-          map.current.flyTo({
-            center: place.coordinates,
-            zoom: 9,
-            padding: { right: 300 }, // Keeps point visible when sidebar opens
-          });
+        el.addEventListener("click", () => {
+          map.current.flyTo({ center: place.coordinates, zoom: 8 });
           openSidebar(place.id);
         });
       });
