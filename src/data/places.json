@@ -9,13 +9,11 @@
     "youtubeId": "z8JtqB3n-w8"
   },
   {
-    "id": "warsaw-oldtown",
+    "id": "warsaw",
     "name": "Warsaw Old Town",
-    "coordinates": [21.0118, 52.2477],
-    "description": "Beautifully reconstructed UNESCO site, a symbol of resilience after WWII destruction. The Royal Castle and Old Town Square are must-sees.",
-    "keywords": ["warsaw", "reconstruction", "unesco", "history"],
-    "image": "/assets/warsaw-oldtown.webp",
-    "youtubeId": "gD7Q1c1822w"
+    "coordinates": [21.0122, 52.2297],
+    "description": "Beautifully reconstructed UNESCO site, a symbol of resilience after WWII destruction.",
+    "youtubeId": "4G8_yN68pLw"
   },
   {
     "id": "gdansk-crane",
