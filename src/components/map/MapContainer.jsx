@@ -15,7 +15,7 @@ const MapContainer = () => {
       container: mapContainer.current,
       style:
         "https://api.maptiler.com/maps/streets-v2/style.json?key=qouYd4hDXkrIIxMJOXH8",
-      center: [19.1451, 51.9194],
+      center: [19.1451, 51.9194], // Geographical center of Poland
       zoom: 6,
     });
 
@@ -24,8 +24,7 @@ const MapContainer = () => {
         const el = document.createElement("div");
         el.className = "map-marker";
 
-        // Use 'bottom' anchor to ensure the sharp tip
-        // stays exactly on the LngLat regardless of zoom level
+        // anchor: 'bottom' puts the sharp tip of your teardrop exactly on the LngLat
         new maplibregl.Marker({
           element: el,
           anchor: "bottom",
