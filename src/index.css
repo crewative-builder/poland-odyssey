@@ -3,15 +3,54 @@
 @tailwind components;
 @tailwind utilities;
 
-/* The sharp teardrop pin */
+/* Resetting default browser margins for a full-screen app */
+body,
+html,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #f8fafc;
+}
+
+/* THE POINTY MARKER 
+   This creates a circle with one sharp corner (bottom-left).
+   By rotating it -45 degrees, that sharp corner points straight down.
+*/
 .map-marker {
-  width: 32px;
-  height: 32px;
-  background-color: #6366f1; /* Indigo */
-  border: 2px solid white;
-  /* Top-left, top-right, bottom-right, bottom-left */
+  width: 34px;
+  height: 34px;
+  background-color: #4f46e5; /* Deep Indigo */
+  border: 2px solid #ffffff;
+
+  /* Top-left: 50%, Top-right: 50%, Bottom-right: 50%, Bottom-left: 0% */
   border-radius: 50% 50% 50% 0;
+
+  /* Rotate so the 0% corner points directly at the coordinate */
   transform: rotate(-45deg);
+
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease-in-out;
+  z-index: 10;
+}
+
+/* Subtle interaction when hovering over the pin */
+.map-marker:hover {
+  background-color: #3730a3;
+  transform: rotate(-45deg) scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Ensure the MapLibre canvas takes up the full container */
+.maplibregl-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Styling for the TopBar title for a clean look */
+h1 {
+  letter-spacing: -0.025em;
 }

@@ -15,8 +15,9 @@ const MapContainer = () => {
       container: mapContainer.current,
       style:
         "https://api.maptiler.com/maps/streets-v2/style.json?key=qouYd4hDXkrIIxMJOXH8",
-      center: [19.1451, 51.9194], // Geographical center of Poland
-      zoom: 6,
+      center: [19.1451, 51.9194],
+      zoom: 6.2,
+      antialias: true,
     });
 
     map.current.on("load", () => {
@@ -24,7 +25,7 @@ const MapContainer = () => {
         const el = document.createElement("div");
         el.className = "map-marker";
 
-        // anchor: 'bottom' puts the sharp tip of your teardrop exactly on the LngLat
+        // 'bottom' makes the sharp tip of the teardrop the exact coordinate
         new maplibregl.Marker({
           element: el,
           anchor: "bottom",
@@ -33,7 +34,11 @@ const MapContainer = () => {
           .addTo(map.current);
 
         el.addEventListener("click", () => {
-          map.current.flyTo({ center: place.coordinates, zoom: 12 });
+          map.current.flyTo({
+            center: place.coordinates,
+            zoom: 11,
+            padding: { right: 300 }, // Ensures the pin stays visible when sidebar opens
+          });
           openSidebar(place.id);
         });
       });
