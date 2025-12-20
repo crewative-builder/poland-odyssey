@@ -1,54 +1,37 @@
 [
   {
-    "id": "krakow-market",
-    "name": "Kraków Main Market Square",
-    "coordinates": [19.9366, 50.0617],
-    "description": "Europe's largest medieval square, home to the Cloth Hall and St. Mary's Basilica. The square dates back to the 13th century and is the heart of Kraków's social life.",
-    "keywords": ["history", "architecture", "krakow", "medieval"],
-    "image": "/assets/krakow-market.webp",
-    "youtubeId": "z8JtqB3n-w8"
-  },
-  {
     "id": "warsaw",
-    "name": "Warsaw Old Town",
+    "name": "Warsaw",
     "coordinates": [21.0122, 52.2297],
-    "description": "Beautifully reconstructed UNESCO site, a symbol of resilience after WWII destruction.",
+    "description": "The capital of Poland, known for its resilient history and the beautifully reconstructed Old Town.",
     "youtubeId": "4G8_yN68pLw"
   },
   {
-    "id": "gdansk-crane",
-    "name": "Gdańsk Crane (Żuraw)",
-    "coordinates": [18.6575, 54.3503],
-    "description": "A historic port crane and one of the most distinctive landmarks on the Motława River. It was both a port crane and a city gate.",
-    "keywords": ["port", "gdansk", "maritime", "trade"],
-    "image": "/assets/gdansk-crane.webp",
-    "youtubeId": "lKjR5f9-w1E"
+    "id": "krakow",
+    "name": "Kraków",
+    "coordinates": [19.945, 50.0647],
+    "description": "The historic royal capital, famous for its medieval architecture and the vast Main Market Square.",
+    "youtubeId": "dQw4w9WgXcQ"
   },
   {
-    "id": "malbork-castle",
-    "name": "Malbork Castle",
-    "coordinates": [19.035, 54.039],
-    "description": "The largest castle in the world by land area, built by the Teutonic Knights. It's a UNESCO World Heritage site and a masterpiece of Gothic architecture.",
-    "keywords": ["castle", "medieval", "teutonic", "unesco"],
-    "image": "/assets/malbork-castle.webp",
-    "youtubeId": "Y3QY6t03j1U"
+    "id": "gdansk",
+    "name": "Gdańsk",
+    "coordinates": [18.6466, 54.352],
+    "description": "A stunning port city on the Baltic coast, known as the birthplace of the Solidarity movement.",
+    "youtubeId": "4G8_yN68pLw"
   },
   {
-    "id": "auschwitz-birkenau",
-    "name": "Auschwitz-Birkenau Memorial",
-    "coordinates": [19.2033, 50.0326],
-    "description": "The site of the largest German Nazi concentration and extermination camp, preserved as a memorial to the victims of the Holocaust.",
-    "keywords": ["history", "memorial", "wwii", "oswiecim"],
-    "image": "/assets/auschwitz.webp",
-    "youtubeId": "PqFqO0n3q3Y"
+    "id": "wroclaw",
+    "name": "Wrocław",
+    "coordinates": [17.0385, 51.1079],
+    "description": "Famous for its hundreds of small dwarf statues and its beautiful Market Square with the Gothic Town Hall.",
+    "youtubeId": "dQw4w9WgXcQ"
   },
   {
-    "id": "tatras-mountains",
-    "name": "Tatra Mountains (Zakopane)",
-    "coordinates": [19.95, 49.27],
-    "description": "The highest range in the Carpathian Mountains, offering stunning alpine landscapes, hiking, and winter sports near the town of Zakopane.",
-    "keywords": ["nature", "mountains", "hiking", "zakopane"],
-    "image": "/assets/tatras.webp",
-    "youtubeId": "QkXF9mN0A2k"
+    "id": "poznan",
+    "name": "Poznań",
+    "coordinates": [16.9252, 52.4064],
+    "description": "A major center for trade and industry, famous for its Renaissance Old Town and mechanical goats.",
+    "youtubeId": "4G8_yN68pLw"
   }
 ]

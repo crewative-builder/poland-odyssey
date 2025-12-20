@@ -3,7 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Resetting default browser margins for a full-screen app */
 body,
 html,
 #root {
@@ -12,45 +11,27 @@ html,
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: #f8fafc;
 }
 
-/* THE POINTY MARKER 
-   This creates a circle with one sharp corner (bottom-left).
-   By rotating it -45 degrees, that sharp corner points straight down.
-*/
+/* The invisible container MapLibre uses for positioning */
+.marker-container {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* The actual Indigo Pin */
 .map-marker {
-  width: 34px;
-  height: 34px;
-  background-color: #4f46e5; /* Deep Indigo */
-  border: 2px solid #ffffff;
-
-  /* Top-left: 50%, Top-right: 50%, Bottom-right: 50%, Bottom-left: 0% */
+  width: 24px; /* Reduced size */
+  height: 24px;
+  background-color: #4f46e5;
+  border: 2px solid white;
+  /* This creates the teardrop: 3 rounded corners, 1 sharp */
   border-radius: 50% 50% 50% 0;
-
-  /* Rotate so the 0% corner points directly at the coordinate */
+  /* Rotate -45deg to make the sharp corner point down */
   transform: rotate(-45deg);
-
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: all 0.2s ease-in-out;
-  z-index: 10;
-}
-
-/* Subtle interaction when hovering over the pin */
-.map-marker:hover {
-  background-color: #3730a3;
-  transform: rotate(-45deg) scale(1.1);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-}
-
-/* Ensure the MapLibre canvas takes up the full container */
-.maplibregl-canvas {
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* Styling for the TopBar title for a clean look */
-h1 {
-  letter-spacing: -0.025em;
 }

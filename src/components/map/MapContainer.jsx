@@ -16,29 +16,27 @@ const MapContainer = () => {
       style:
         "https://api.maptiler.com/maps/streets-v2/style.json?key=qouYd4hDXkrIIxMJOXH8",
       center: [19.1451, 51.9194],
-      zoom: 6.2,
-      antialias: true,
+      zoom: 6,
     });
 
     map.current.on("load", () => {
       placesData.forEach((place) => {
         const el = document.createElement("div");
-        el.className = "map-marker";
+        el.className = "marker-container";
 
-        // 'bottom' makes the sharp tip of the teardrop the exact coordinate
+        const pin = document.createElement("div");
+        pin.className = "map-marker";
+        el.appendChild(pin);
+
         new maplibregl.Marker({
           element: el,
-          anchor: "bottom",
+          anchor: "bottom", // This aligns the tip to the coordinate
         })
           .setLngLat(place.coordinates)
           .addTo(map.current);
 
         el.addEventListener("click", () => {
-          map.current.flyTo({
-            center: place.coordinates,
-            zoom: 11,
-            padding: { right: 300 }, // Ensures the pin stays visible when sidebar opens
-          });
+          map.current.flyTo({ center: place.coordinates, zoom: 10 });
           openSidebar(place.id);
         });
       });
